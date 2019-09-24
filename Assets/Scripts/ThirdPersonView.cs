@@ -1,65 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class ThirdPersonView : MonoBehaviour
 {
-    public bool LockCursor;
-    public float MouseSensitivity = 10;
-    public Transform Target;
-    public float DstFromTarget = 2;
-    public Vector2 PitchMinMax = new Vector2(-20, 85);
-    public Transform PlayerTransform;
 
-    public float RotationSmoothTime = 0.12f;
+    public bool lockCursor;
+    public float mouseSensitivity = 10;
+    public Transform target;
+    public float dstFromTarget = 4;
+    public Vector2 pitchMinMax = new Vector2(-40, 55);
+
+    public float rotationSmoothTime = .12f;
     Vector3 rotationSmoothVelocity;
     Vector3 currentRotation;
-    private Vector3 cameraCompensationPos;
 
     float yaw;
     float pitch;
 
-    private float mouseX, mouseY;
-
-    private void Start()
+    void Start()
     {
-        if (LockCursor)
+        if (lockCursor)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
-        CamControl();
-        //CompensateForWalls(PlayerTransform.position, transform.position);
-    }
+        yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
+        pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+        pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
 
-    void CamControl()
-    {
-        yaw += Input.GetAxis("Mouse X") * MouseSensitivity;
-        pitch -= Input.GetAxis("Mouse Y") * MouseSensitivity;
-        pitch = Mathf.Clamp(pitch, PitchMinMax.x, PitchMinMax.y);
-
-
-        currentRotation = Vector3.SmoothDamp(currentRotation, new Vector3(pitch, yaw), ref rotationSmoothVelocity, RotationSmoothTime);
+        currentRotation = Vector3.SmoothDamp(currentRotation, new Vector3(pitch, yaw), ref rotationSmoothVelocity, rotationSmoothTime);
         transform.eulerAngles = currentRotation;
 
-        transform.position = Target.position - transform.forward * DstFromTarget;
-    }
+        transform.position = target.position - transform.forward * dstFromTarget;
 
-    private void CompensateForWalls(Vector3 fromObject, Vector3 toTarget)
-    {
-        //Debug.DrawLine(fromObject, toTarget, Color.red);
-        //RaycastHit wallHit = new RaycastHit();
-        //if(Physics.Linecast(fromObject, toTarget, out wallHit))
-        //{
-        //    Debug.DrawRay(wallHit.point, Vector3.left, Color.cyan);
-        //    cameraCompensationPos = new Vector3(wallHit.point.x, toTarget.y, wallHit.point.z);
-        //    //transform.position = cameraCompensationPos;
-        //}
     }
-
 
 }

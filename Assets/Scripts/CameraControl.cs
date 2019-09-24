@@ -9,10 +9,10 @@ public class CameraControl : MonoBehaviour
     public Transform[] views;
     public float transitionSpeed;
     Transform desiredView, currentView;
-    ThirdPersonView thirdPersonView;
+    //ThirdPersonView thirdPersonView;
     void Start()
     {
-        thirdPersonView = GetComponent<ThirdPersonView>();
+      //  thirdPersonView = GetComponent<ThirdPersonView>();
         desiredView = views[0];
     }
 
@@ -38,7 +38,7 @@ public class CameraControl : MonoBehaviour
     {
         if (currentView != desiredView)
         {
-            thirdPersonView.enabled = false;
+        //    thirdPersonView.enabled = false;
 
             transform.position = Vector3.Lerp(transform.position, desiredView.position, Time.deltaTime * transitionSpeed);
             Vector3 currentAngle = new Vector3(
@@ -53,7 +53,7 @@ public class CameraControl : MonoBehaviour
         }
         else
         {
-            thirdPersonView.enabled = true;
+          //  thirdPersonView.enabled = true;
         }
 
     }

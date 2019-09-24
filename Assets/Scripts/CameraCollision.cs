@@ -22,22 +22,29 @@ public class CameraCollision : MonoBehaviour
 
     void Update()
     {
-        Vector3 desiredCameraPos = transform.parent.TransformPoint(dollyDir * Distance);
+        CompensateForCollision();
+    }
 
-        Debug.DrawLine(transform.parent.position, desiredCameraPos, Color.red);
-   //     Debug.DrawLine();
+    void CompensateForCollision()
+    {
+        Vector3 desiredCameraPos = transform.TransformPoint(dollyDir * Distance);
+
+        Debug.DrawLine(transform.parent.position, transform.position, Color.red);
 
         RaycastHit hit;
-        if (Physics.Linecast(transform.parent.position, desiredCameraPos, out hit))
+        if (Physics.Linecast(transform.parent.position, transform.position, out hit))
         {
             Debug.DrawRay(hit.point, Vector3.left, Color.cyan);
-            Distance = Mathf.Clamp((hit.distance * 0.8f), MinDistance, MaxDistance);
-            
+            Distance = Mathf.Clamp((hit.distance * 0.87f), MinDistance, MaxDistance);
+
+            desiredCameraPos = new Vector3(hit.point.x, transform.position.y, hit.point.z);
         }
         else
         {
             Distance = MaxDistance;
         }
-        transform.localPosition = Vector3.Lerp(transform.localPosition, dollyDir * Distance, Time.deltaTime * Smooth);
+
+        transform.position = desiredCameraPos;
+        //transform.localPosition = Vector3.Lerp(transform.localPosition, dollyDir * Distance, Time.deltaTime * Smooth);
     }
 }

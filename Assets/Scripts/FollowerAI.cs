@@ -26,13 +26,13 @@ public class FollowerAI : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed);
         }
 
-        else
-        {
-            Vector3 vel = Random.insideUnitCircle * moveSpeed;
-            vel.y = 0.0f;
+        //else
+        //{
+        //    Vector3 vel = Random.insideUnitCircle * moveSpeed;
+        //    vel.y = 0.0f;
 
-            transform.Translate(vel * Time.deltaTime * 10);
-        }
+        //    transform.Translate(vel * Time.deltaTime * 10);
+        //}
         
     }
 }
