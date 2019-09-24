@@ -4,62 +4,34 @@ using UnityEngine;
 
 public class ThirdPersonView : MonoBehaviour
 {
-    public bool LockCursor;
-    public float MouseSensitivity = 10;
-    public Transform Target;
-    public float DstFromTarget = 2;
-    public Vector2 PitchMinMax = new Vector2(-20, 85);
-    public Transform PlayerTransform;
+    public Transform target, player;
 
-    public float RotationSmoothTime = 0.12f;
-    Vector3 rotationSmoothVelocity;
-    Vector3 currentRotation;
-    private Vector3 cameraCompensationPos;
+    public float rotationSpeed = 1.0f;
 
-    float yaw;
-    float pitch;
 
     private float mouseX, mouseY;
 
     private void Start()
     {
-        if (LockCursor)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     private void LateUpdate()
     {
         CamControl();
-        //CompensateForWalls(PlayerTransform.position, transform.position);
     }
 
     void CamControl()
     {
-        yaw += Input.GetAxis("Mouse X") * MouseSensitivity;
-        pitch -= Input.GetAxis("Mouse Y") * MouseSensitivity;
-        pitch = Mathf.Clamp(pitch, PitchMinMax.x, PitchMinMax.y);
+        mouseX += Input.GetAxis("Mouse X") * rotationSpeed;
+        mouseY -= Input.GetAxis("Mouse Y") * rotationSpeed;
+        mouseY = Mathf.Clamp(mouseY, -35, 60);
 
+        transform.LookAt(target);
 
-        currentRotation = Vector3.SmoothDamp(currentRotation, new Vector3(pitch, yaw), ref rotationSmoothVelocity, RotationSmoothTime);
-        transform.eulerAngles = currentRotation;
-
-        transform.position = Target.position - transform.forward * DstFromTarget;
+        target.rotation = Quaternion.Euler(mouseY, mouseX, 0);
+        player.rotation = Quaternion.Euler(0, mouseX, 0);
     }
-
-    private void CompensateForWalls(Vector3 fromObject, Vector3 toTarget)
-    {
-        //Debug.DrawLine(fromObject, toTarget, Color.red);
-        //RaycastHit wallHit = new RaycastHit();
-        //if(Physics.Linecast(fromObject, toTarget, out wallHit))
-        //{
-        //    Debug.DrawRay(wallHit.point, Vector3.left, Color.cyan);
-        //    cameraCompensationPos = new Vector3(wallHit.point.x, toTarget.y, wallHit.point.z);
-        //    //transform.position = cameraCompensationPos;
-        //}
-    }
-
-
 }
