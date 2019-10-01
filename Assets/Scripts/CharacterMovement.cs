@@ -16,6 +16,8 @@ public class CharacterMovement : MonoBehaviour
     float currentSpeed;
     float velocityY;
 
+    public bool Locked = false;
+
     //Animator animator;
     Transform cameraT;
     CharacterController controller;
@@ -32,6 +34,12 @@ public class CharacterMovement : MonoBehaviour
         // input
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         Vector2 inputDir = input.normalized;
+
+        if (Locked)
+        {
+            Locked = false;
+            return;
+        }
 
         Move(inputDir);
         //PlayerMovement();
