@@ -3,10 +3,13 @@ using System.Collections;
 
 public class ThirdPersonView : MonoBehaviour
 {
+    private Transform target;
+    public Transform player;
+    public Transform dog;
 
     public bool lockCursor;
+    private bool isPlayer;
     public float mouseSensitivity = 10;
-    public Transform target;
     public float dstFromTarget = 4;
     public Vector2 pitchMinMax = new Vector2(-40, 55);
 
@@ -24,6 +27,14 @@ public class ThirdPersonView : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+        target = player;
+        isPlayer = true;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.V))
+            SwapTarget();
     }
 
     void LateUpdate()
@@ -37,6 +48,19 @@ public class ThirdPersonView : MonoBehaviour
 
         transform.position = target.position - transform.forward * dstFromTarget;
 
+    }
+
+    void SwapTarget()
+    {
+        if (Vector3.Distance(player.transform.position, dog.transform.position) < 6)
+        {
+            isPlayer = !isPlayer;
+
+            if (isPlayer)
+                target = player;
+            else if (!isPlayer)
+                target = dog;
+        }
     }
 
 }
