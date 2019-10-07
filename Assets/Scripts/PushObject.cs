@@ -4,36 +4,48 @@ using UnityEngine;
 
 public class PushObject : MonoBehaviour
 {
-    public float currentSpeed = 5f;
-    CharacterController controller;
-    public float gravity = -12;
-    float velocityY;
-    float distance;
     public Transform PlayerTransform;
-    bool previous, pushed = false, hasHit = false;
+    public Transform DogTransform;
+    Transform currentTransform;
+    Transform followerTransform;
+    CharacterController controller;
+    RaycastHit hit;
+    Vector3 velocity;
+    Vector3 direction;
+
+    public float currentSpeed = 5f;
+    public float gravity = -9.8f;
+    float distance;
+    float friction = 0.96f;
+    bool previous;
+    bool pushed = false;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        currentTransform = PlayerTransform;
+        followerTransform = DogTransform;
     }
 
     void Update()
     {
-        distance = Vector3.Distance(PlayerTransform.position, transform.position);
+        //Debug.Log(velocity.magnitude);
+        CheckSide();
+        distance = Vector3.Distance(currentTransform.position, transform.position);
         if (!controller.isGrounded)
         {
-            controller.Move(new Vector3(0, -currentSpeed * Time.deltaTime, 0));
-        }  
+            controller.Move(new Vector3(0, gravity * Time.deltaTime, 0));
+        }
         if (pushed)
         {
-                Move();
+            Move();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if(InRange())
-            pushed = true;
+            if (InRange())
+                pushed = true;
         }
-        
+
         Fallen();
     }
 
@@ -47,38 +59,41 @@ public class PushObject : MonoBehaviour
 
     void Move()
     {
-        velocityY += Time.deltaTime * gravity;
-        Vector3 velocity = Vector3.zero * currentSpeed + Vector3.up * velocityY;
+        velocity *= friction;
+
         controller.Move(velocity * Time.deltaTime);
 
         if (controller.isGrounded)
         {
-            controller.Move(new Vector3(-currentSpeed * Time.deltaTime, 0, 0));
+            controller.Move(direction * Time.deltaTime);
+        }
+        if (velocity.magnitude < 0.3f)
+        {
+            pushed = false;
         }
     }
 
     void Fallen()
     {
-        if (hasHit)
-        { 
-            if (!previous)
+        if (!previous)
+        {
+            if (controller.isGrounded)
             {
-                if (controller.isGrounded)
-                {
-                   Debug.Log("hasFallen");
-                   currentSpeed = 0;
-                }
+                Debug.Log("hasFallen");
+                velocity = Vector3.zero;
             }
         }
         previous = controller.isGrounded;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    private void CheckSide()
     {
-        if (collider.name == "Krockkudde")
-        {
-            hasHit = true;
-            pushed = false;
-        }
+        Debug.DrawRay(currentTransform.position, currentTransform.forward, Color.green);
+        if (InRange() && Input.GetKeyDown(KeyCode.E))
+            if (Physics.Raycast(currentTransform.position, currentTransform.forward, out hit))
+            {
+                direction = -hit.normal;
+                velocity = direction * currentSpeed;
+            }
     }
 }
