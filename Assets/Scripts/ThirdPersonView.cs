@@ -57,11 +57,6 @@ public class ThirdPersonView : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V) && !swappingTarget)
         {
-            targetCM.enabled = false;
-            targetCC.enabled = false;
-            otherFAI.enabled = false;
-            otherNVA.enabled = false;
-
             swappingTarget = true;
         }
 
@@ -111,6 +106,11 @@ public class ThirdPersonView : MonoBehaviour
         //Om "target" och "other" är inom ett visst avstånd från varandra.
         if (Vector3.Distance(target.transform.position, other.transform.position) < maxSwapDistance)
         {
+            targetCM.enabled = false;
+            targetCC.enabled = false;
+            otherFAI.enabled = false;
+            otherNVA.enabled = false;
+
             float targetFacing = Vector3.Angle((other.transform.position - target.transform.position), target.transform.forward);
             float otherFacing = Vector3.Angle((target.transform.position - other.transform.position), other.transform.forward);
 
@@ -138,7 +138,7 @@ public class ThirdPersonView : MonoBehaviour
                 Vector3 newCamTargetPos = other.transform.position + (-other.transform.forward * dstFromTarget) + Vector3.up * 2;
 
                 //Kameran kollar om den har bytat position till sitt nya target, och bytar target isåfall.
-                if (currentLerpTime >= lerpTime)
+                if (currentLerpTime >= 1)
                 {
                     if (target == Dog)
                     {
@@ -164,15 +164,18 @@ public class ThirdPersonView : MonoBehaviour
                     swappingTarget = false;
                     currentLerpTime = 0;
                 }
-                //Om kameran inte har roterat så roterar den till sitt nya target.
+                //If the camera hasn't rotated to the new target.
                 else
                 {
                     Vector3 tempCamTargetPos = target.transform.position + (target.transform.forward * (Vector3.Distance(target.transform.position, other.transform.position) / 2));
                     currentLerpTime += Time.deltaTime;
                     transform.LookAt(tempCamTargetPos);
                     transform.position = Vector3.Lerp(transform.position, newCamTargetPos, currentLerpTime / lerpTime);
+
                 }
             }
         }
+        else
+            swappingTarget = false;
     }
 }
