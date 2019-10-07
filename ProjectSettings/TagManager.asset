@@ -6,6 +6,7 @@ TagManager:
   tags:
   - cam2
   - cam1
+  - boundry
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Climbable
   - 
   - 
   - 

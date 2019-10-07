@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 2136586539607715076}
   - component: {fileID: 2136586539607715075}
   - component: {fileID: 2136586539607715079}
-  - component: {fileID: 8157504033718597382}
+  - component: {fileID: 7060941038661668170}
   - component: {fileID: 671319945}
   - component: {fileID: 671319946}
   m_Layer: 0
@@ -192,7 +192,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8157504033718597382
+--- !u!114 &7060941038661668170
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da680355c5088904d9b6bcbdb9cf976f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 6
+  CurrentWalkSpeed: 6
   gravity: -12
   turnSmoothTime: 0.2
   speedSmoothTime: 0.1
