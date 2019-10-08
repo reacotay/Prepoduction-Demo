@@ -39,23 +39,19 @@ public class PointerScript : MonoBehaviour
         if (cos > 0)
         {
             screenPos = new Vector3(screenBounds.y / m, screenBounds.y, 0);
-            Debug.Log("Upp");
         }
         else
         {
             screenPos = new Vector3(-screenBounds.y / m, -screenBounds.y, 0);
-            Debug.Log("Ner");
         }
 
         if (screenPos.x > screenBounds.x)
         {
             screenPos = new Vector3(screenBounds.x, screenBounds.x * m, 0);
-            Debug.Log("Höger");
         }
         else if (screenPos.x < -screenBounds.x)
         {
             screenPos = new Vector3(-screenBounds.x, -screenBounds.x * m, 0);
-            Debug.Log("Vänster");
         }
 
         screenPos += screenCenter;

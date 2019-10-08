@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class PushObject : MonoBehaviour
 {
-    public Transform PlayerTransform;
-    public Transform DogTransform;
-    Transform currentTransform;
-    Transform followerTransform;
-    CharacterController controller;
-    RaycastHit hit;
-    Vector3 velocity;
-    Vector3 direction;
-
     public float currentSpeed = 5f;
     public float gravity = -9.8f;
-    float distance;
-    float friction = 0.96f;
-    bool previous;
-    bool pushed = false;
+
+    private float distance;
+    private float friction = 0.96f;
+    private bool pushed = false;
+
+    public Transform PlayerTransform;
+    public Transform DogTransform;
+
+    private Transform currentTransform;
+    private Transform followerTransform;
+    private CharacterController controller;
+    private Vector3 velocity;
+    private Vector3 direction;
 
     void Start()
     {
@@ -29,24 +29,25 @@ public class PushObject : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(velocity.magnitude);
-        CheckSide();
         distance = Vector3.Distance(currentTransform.position, transform.position);
+
         if (!controller.isGrounded)
         {
             controller.Move(new Vector3(0, gravity * Time.deltaTime, 0));
         }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (CheckSide())
+            {
+                pushed = true;
+            }
+        }
+
         if (pushed)
         {
             Move();
         }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (InRange())
-                pushed = true;
-        }
-
-        Fallen();
     }
 
     bool InRange()
@@ -63,37 +64,32 @@ public class PushObject : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
 
-        if (controller.isGrounded)
-        {
-            controller.Move(direction * Time.deltaTime);
-        }
         if (velocity.magnitude < 0.3f)
         {
             pushed = false;
         }
     }
 
-    void Fallen()
+    private bool CheckSide()
     {
-        if (!previous)
-        {
-            if (controller.isGrounded)
-            {
-                Debug.Log("hasFallen");
-                velocity = Vector3.zero;
-            }
-        }
-        previous = controller.isGrounded;
-    }
+        currentTransform = Camera.main.GetComponent<ThirdPersonView>().GetCurrentTarget().transform;
 
-    private void CheckSide()
-    {
         Debug.DrawRay(currentTransform.position, currentTransform.forward, Color.green);
-        if (InRange() && Input.GetKeyDown(KeyCode.E))
-            if (Physics.Raycast(currentTransform.position, currentTransform.forward, out hit))
+        RaycastHit hit;
+        LayerMask layerMask = 1 << 0;
+        if (Physics.Raycast(currentTransform.position, currentTransform.forward, out hit, Mathf.Infinity, layerMask))
+        {
+            if (hit.collider.name == "Hitbox")
             {
                 direction = -hit.normal;
                 velocity = direction * currentSpeed;
+                Debug.Log(direction.ToString());
+                return true;
             }
+
+        }
+       
+
+        return false;
     }
 }

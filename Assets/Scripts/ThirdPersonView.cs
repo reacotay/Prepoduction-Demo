@@ -82,6 +82,11 @@ public class ThirdPersonView : MonoBehaviour
         }
     }
 
+    public GameObject GetCurrentTarget()
+    {
+        return target;
+    }
+
     void CompensateForCollision()
     {
         //Vector3 desiredCameraPos; //= transform.TransformPoint(dollyDir * Distance);

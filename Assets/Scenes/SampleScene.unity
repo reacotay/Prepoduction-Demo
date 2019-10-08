@@ -238,7 +238,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139903535}
   m_LocalRotation: {x: -0, y: -0, z: 0.23252606, w: 0.97259015}
-  m_LocalPosition: {x: 8.04, y: 1.07, z: -3.552996}
+  m_LocalPosition: {x: 7.94, y: 1.27, z: -3.552996}
   m_LocalScale: {x: 14.849227, y: 1.85629, z: 5.298559}
   m_Children: []
   m_Father: {fileID: 533910040}
@@ -1042,6 +1042,10 @@ PrefabInstance:
       propertyPath: targetTransform
       value: 
       objectReference: {fileID: 1623961328}
+    - target: {fileID: 1341596824, guid: 671d2cb044997dc4cbec8bd164d1eb74, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 671d2cb044997dc4cbec8bd164d1eb74, type: 3}
 --- !u!1 &854931417
@@ -1357,6 +1361,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PushableOjbect
       objectReference: {fileID: 0}
+    - target: {fileID: 6667696757533712658, guid: 0dd5e28b92466754f950c5a139e03e79,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6667696757533712662, guid: 0dd5e28b92466754f950c5a139e03e79,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1417,6 +1426,26 @@ PrefabInstance:
       propertyPath: PlayerTransform
       value: 
       objectReference: {fileID: 1414147716}
+    - target: {fileID: 6667696757533712661, guid: 0dd5e28b92466754f950c5a139e03e79,
+        type: 3}
+      propertyPath: DogTransform
+      value: 
+      objectReference: {fileID: 1623961328}
+    - target: {fileID: 6667696757533712657, guid: 0dd5e28b92466754f950c5a139e03e79,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667696757533712657, guid: 0dd5e28b92466754f950c5a139e03e79,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667696757533712660, guid: 0dd5e28b92466754f950c5a139e03e79,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dd5e28b92466754f950c5a139e03e79, type: 3}
 --- !u!1 &1466581274 stripped
@@ -1762,6 +1791,12 @@ Transform:
   m_Father: {fileID: 533910040}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &2001166544 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6667696757533712662, guid: 0dd5e28b92466754f950c5a139e03e79,
+    type: 3}
+  m_PrefabInstance: {fileID: 1417066293}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2029999883
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1851,6 +1886,50 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0aa648063460c6742a30fe730056410d, type: 3}
+--- !u!1 &2035096475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2035096476}
+  - component: {fileID: 2035096477}
+  m_Layer: 0
+  m_Name: Hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2035096476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035096475}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2001166544}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2035096477
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035096475}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2035588718
 GameObject:
   m_ObjectHideFlags: 0
