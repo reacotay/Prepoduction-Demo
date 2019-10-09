@@ -94,7 +94,7 @@ public class CharacterMovement : MonoBehaviour
             float acceptableDist = 2f;
 
             //We cannot climb up over objects shorter than this value from where we shoot our ray
-            float minClimbHeight = 9.1f;
+            float minClimbHeight = 9.6f;
 
             //We can only climb on objects taller than this (it's a smaller value than minClimbHeight seeing as we
             //are shooting a ray from above and it will collide earlier on a higher object
@@ -105,8 +105,8 @@ public class CharacterMovement : MonoBehaviour
             {
                 if (straightHit.distance < acceptableDist)
                 {
-                    Debug.DrawRay(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height * 10), -transform.up);
-                    if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height * 5),
+                    Debug.DrawRay(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height * 5), -transform.up);
+                    if (Input.GetKeyDown(KeyCode.R) && Physics.Raycast(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height * 5),
                         -transform.up, out overLedgeHit, lookDist, layerMask))
                     {
                         Debug.Log(overLedgeHit.distance);
@@ -166,7 +166,7 @@ public class CharacterMovement : MonoBehaviour
 
                     if (gameObject.name != "Dog")
                     {
-                        if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
+                        if (Input.GetKeyDown(KeyCode.R) && Physics.Raycast(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
                         -transform.forward, out hit, lookDist, layerMask))
                         {
                             //Debug.Log(hit.distance);

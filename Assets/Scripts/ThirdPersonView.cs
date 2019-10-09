@@ -24,7 +24,6 @@ public class ThirdPersonView : MonoBehaviour
     private Vector3 rotationSmoothVelocity;
     private Vector3 currentRotation;
     private Vector3 newCamPosition;
-    private GameObject target;
     private GameObject other;
     private RaycastHit hit;
     private CharacterMovement targetCM;
@@ -32,6 +31,7 @@ public class ThirdPersonView : MonoBehaviour
     private FollowerAI otherFAI;
     private NavMeshAgent otherNVA;
 
+    public GameObject target;
     public GameObject Human;
     public GameObject Dog;
     public Vector2 pitchMinMax = new Vector2(-5, 55);
@@ -94,7 +94,7 @@ public class ThirdPersonView : MonoBehaviour
 
         if (Physics.Linecast(target.transform.position, transform.position, out hit))
         {
-            if (hit.collider.name != "Main Camera" && hit.collider.name != "Player" && hit.collider.name != "Dog" && hit.collider.name != "Cylinder")
+            if (hit.collider.name != "Main Camera" && hit.collider.name != "Player" && hit.collider.name != "Dog" && hit.collider.name != "Cylinder" && hit.collider.name != "BoundingBox")
             {
                 Debug.DrawRay(hit.point, hit.normal, Color.cyan);
                 //transform.position = hit.point;

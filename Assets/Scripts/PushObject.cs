@@ -11,24 +11,22 @@ public class PushObject : MonoBehaviour
     private float friction = 0.96f;
     private bool pushed = false;
 
-    public Transform PlayerTransform;
-    public Transform DogTransform;
+    public ThirdPersonView TPV;
 
     private Transform currentTransform;
-    private Transform followerTransform;
     private CharacterController controller;
     private Vector3 velocity;
     private Vector3 direction;
 
     void Start()
     {
-        controller = GetComponent<CharacterController>();
-        currentTransform = PlayerTransform;
-        followerTransform = DogTransform;
+        controller = gameObject.GetComponent<CharacterController>();
+        currentTransform = TPV.target.transform;
     }
 
     void Update()
     {
+        currentTransform = TPV.target.transform;
         distance = Vector3.Distance(currentTransform.position, transform.position);
 
         if (!controller.isGrounded)
@@ -36,7 +34,7 @@ public class PushObject : MonoBehaviour
             controller.Move(new Vector3(0, gravity * Time.deltaTime, 0));
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && InRange())
         {
             if (CheckSide())
             {
@@ -76,8 +74,8 @@ public class PushObject : MonoBehaviour
 
         Debug.DrawRay(currentTransform.position, currentTransform.forward, Color.green);
         RaycastHit hit;
-        LayerMask layerMask = 1 << 0;
-        if (Physics.Raycast(currentTransform.position, currentTransform.forward, out hit, Mathf.Infinity, layerMask))
+
+        if (Physics.Raycast(currentTransform.position, currentTransform.forward, out hit, Mathf.Infinity))
         {
             if (hit.collider.name == "Hitbox")
             {
@@ -89,7 +87,6 @@ public class PushObject : MonoBehaviour
 
         }
        
-
         return false;
     }
 }
