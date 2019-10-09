@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndlessForrest : MonoBehaviour
+public class EndlessForest : MonoBehaviour
 {
+    private float dstFromTarget = 4;
+
     private Vector3 tempPosition;
     public GameObject player;
     private BoxCollider boxCollider;
@@ -13,7 +15,7 @@ public class EndlessForrest : MonoBehaviour
         boxCollider = GetComponent<BoxCollider>();
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         Vector3 playerPosition = player.transform.position;
         tempPosition = Vector3.zero;
@@ -32,7 +34,7 @@ public class EndlessForrest : MonoBehaviour
         {
             CharacterMovement cMove = player.GetComponent<CharacterMovement>();
             cMove.Locked = true;
-            player.gameObject.transform.position += tempPosition;
+            player.transform.position += tempPosition;
         }
 
         tempPosition = Vector3.zero;

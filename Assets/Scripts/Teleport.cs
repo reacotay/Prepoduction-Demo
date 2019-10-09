@@ -5,12 +5,17 @@ using System;
 
 public class Teleport : MonoBehaviour
 {
+    private float disabletimer = 2;
+    private bool available = false;
+
     public int code;
-    float disabletimer = 2;
-    bool available = false;
-    CharacterMovement cMove;
-    Collider collider;
-    
+
+    private CharacterMovement cMove;
+    private Collider collider;
+
+    public GameObject BoundingBox;
+    public GameObject FogSphere;
+
     private void Update()
     {
         if (disabletimer > 0)
@@ -33,6 +38,11 @@ public class Teleport : MonoBehaviour
                 {
                     if (tp.code == code && tp != this)
                     {
+                        if (tp.code == 1)
+                        {
+                            BoundingBox.SetActive(false);
+                            FogSphere.SetActive(false);
+                        }
 
                         tp.disabletimer = 2;
                         Vector3 position = tp.gameObject.transform.position;

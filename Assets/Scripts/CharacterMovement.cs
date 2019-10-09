@@ -17,9 +17,10 @@ public class CharacterMovement : MonoBehaviour
 
     public float CurrentWalkSpeed = 6;
     private float originalWalkSpeed = 6;
+    public float ClimbSpeed = 4;
     public float gravity = -12;
-    [Range(0, 1)]
 
+    [Range(0, 1)]
     public float turnSmoothTime = 0.2f;
     float turnSmoothVelocity;
 
@@ -64,7 +65,12 @@ public class CharacterMovement : MonoBehaviour
             Move(inputDir);
         }
 
-        CheckForClimb();
+        //If we aren't playing as the dog, check for climable ledges
+        if (gameObject.name != "Dog")
+        {
+            CheckForClimb();
+        }
+
         CheckforDrop();
 
         //PlayerMovement();
@@ -84,22 +90,32 @@ public class CharacterMovement : MonoBehaviour
             int layerMask = 1 << 9;
             int lookDist = 100;
 
+            //The acceptable distance we can be away from the wall in our forward plane when we raycast to detect a wall
             float acceptableDist = 2f;
-            float maxClimbHeight = 1.2f;
+
+            //We cannot climb up over objects shorter than this value from where we shoot our ray
+            float minClimbHeight = 9.1f;
+
+            //We can only climb on objects taller than this (it's a smaller value than minClimbHeight seeing as we
+            //are shooting a ray from above and it will collide earlier on a higher object
+            float maxClimbHeight = 9.0f;
 
             //Debug.DrawRay(transform.position, )
             if (Physics.Raycast(transform.position, transform.forward, out straightHit, lookDist, layerMask))
             {
                 if (straightHit.distance < acceptableDist)
                 {
-                    if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height),
+                    Debug.DrawRay(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height * 10), -transform.up);
+                    if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position + (transform.forward * 1.1f) + (transform.up * controller.height * 5),
                         -transform.up, out overLedgeHit, lookDist, layerMask))
                     {
                         Debug.Log(overLedgeHit.distance);
-                        if (overLedgeHit.distance < maxClimbHeight)
+                        //We are not able to climb up over anything which is closer from our raycast start than maxClimbHeight
+                        //and we are not able to climb anything farther away from our raycast start than minClimbHeight
+                        if (overLedgeHit.distance > maxClimbHeight && overLedgeHit.distance < minClimbHeight)
                         {
                             hit = straightHit;
-                            distanceToClimb = controller.height - hit.distance + transform.position.y;
+                            distanceToClimb = controller.height / 2 + overLedgeHit.point.y - transform.position.y;
                             Debug.Log("Ledge is short enought to climb");
                             //Add the order of events that will comprise this action
                             d1 = new Delegate(TurnTowardsWall);
@@ -111,7 +127,7 @@ public class CharacterMovement : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Ledge is to short to climb");
+                            Debug.Log("Ledge is either too short or too high to climb");
                         }
                     }
                 }
@@ -141,25 +157,30 @@ public class CharacterMovement : MonoBehaviour
                     CurrentWalkSpeed = 0;
 
                     //Debugging
-                    Physics.Raycast(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
-                        -transform.forward, out hit, lookDist, layerMask);
-                    Debug.DrawRay(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
-                        -transform.forward);
-                    Debug.DrawRay(hit.point, hit.normal);
+                    //Physics.Raycast(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
+                    //    -transform.forward, out hit, lookDist, layerMask);
+                    //Debug.DrawRay(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
+                    //    -transform.forward);
+                    //Debug.DrawRay(hit.point, hit.normal);
                     //Debugging
 
-                    if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
-                        -transform.forward, out hit, lookDist, layerMask))
+                    if (gameObject.name != "Dog")
                     {
-                        //Debug.Log(hit.distance);
-                        distanceToBackUp = hit.distance;
-                        d1 = new Delegate(TurnTowardsWall);
-                        dList.Add(d1);
-                        d1 = new Delegate(WalkBackwardsABit);
-                        dList.Add(d1);
-                        d1 = new Delegate(ClimbDown);
-                        dList.Add(d1);
-                    }
+                        if (Input.GetKeyDown(KeyCode.E) && Physics.Raycast(transform.position + (transform.forward * 1f) + (-transform.up * controller.height),
+                        -transform.forward, out hit, lookDist, layerMask))
+                        {
+                            //Debug.Log(hit.distance);
+                            distanceToBackUp = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(hit.point.x, hit.point.z)) + controller.radius;
+
+                            //distanceToBackUp = Vector3.Distance(transform.position, hit.point);
+                            d1 = new Delegate(TurnTowardsWall);
+                            dList.Add(d1);
+                            d1 = new Delegate(WalkBackwardsABit);
+                            dList.Add(d1);
+                            d1 = new Delegate(ClimbDown);
+                            dList.Add(d1);
+                        }
+                    }                 
                 }
                 else if (minDistToGround < groundHit.distance && groundHit.distance > maxDistToGround)
                 {
@@ -230,7 +251,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!controller.isGrounded)
         {
-            Vector3 velocity = -transform.up;
+            Vector3 velocity = -transform.up * ClimbSpeed;
             controller.Move(velocity * Time.deltaTime);
         }
         else
@@ -244,7 +265,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (climbedDistance < distanceToClimb)
         {
-            Vector3 velocity = transform.up;
+            Vector3 velocity = transform.up * ClimbSpeed;
             controller.Move(velocity * Time.deltaTime);
             climbedDistance += velocity.y * Time.deltaTime;
         }
@@ -273,7 +294,7 @@ public class CharacterMovement : MonoBehaviour
             Debug.Log("Dist to Back: " + distanceToBackUp);
             Debug.Log("Dist Backed: " + distanceBackedUp);
             //getOverLedgeTimer += Time.deltaTime;
-            distanceBackedUp += Mathf.Abs(transform.forward.z) * Time.deltaTime;
+            distanceBackedUp += transform.forward.magnitude * Time.deltaTime;
             controller.Move(-transform.forward * Time.deltaTime);
         }
         else
