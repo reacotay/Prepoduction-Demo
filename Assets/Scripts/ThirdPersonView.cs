@@ -7,7 +7,7 @@ public class ThirdPersonView : MonoBehaviour
     private bool swappingTarget = false;
     private float lerpTime = 3;
     private float currentLerpTime = 0;
-    private float minAngleDiffForSwap = 15;
+    private float minAngleDiffForSwap = 10;
     private float maxSwapDistance = 6;
     private float yaw;
     private float pitch;
@@ -20,9 +20,12 @@ public class ThirdPersonView : MonoBehaviour
     public float dstFromTarget = 4;
     public float rotationSmoothTime = .12f;
     public bool lockCursor;
+    private bool justSwitched = false;
 
+    private Vector3 offset;
     private Vector3 rotationSmoothVelocity;
     private Vector3 currentRotation;
+    private Vector3 targetRotation;
     private Vector3 newCamPosition;
     private GameObject other;
     private RaycastHit hit;
@@ -47,6 +50,8 @@ public class ThirdPersonView : MonoBehaviour
         target = Human;
         other = Dog;
 
+        offset = new Vector3(0, dstFromTarget, -dstFromTarget);
+
         targetCM = target.GetComponent<CharacterMovement>();
         targetCC = target.GetComponent<CharacterController>();
         otherFAI = other.GetComponent<FollowerAI>();
@@ -59,7 +64,6 @@ public class ThirdPersonView : MonoBehaviour
         {
             swappingTarget = true;
         }
-
         if (swappingTarget)
             SwapTarget();
     }
@@ -70,11 +74,17 @@ public class ThirdPersonView : MonoBehaviour
         {
             Distance = transform.localPosition.magnitude;
 
-            yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
-            pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
-            pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+            if (!justSwitched)
+            {
+                yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
+                pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+                pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+                targetRotation = new Vector3(pitch, yaw);
+            }
 
-            currentRotation = Vector3.SmoothDamp(currentRotation, new Vector3(pitch, yaw), ref rotationSmoothVelocity, rotationSmoothTime);
+            justSwitched = false;
+
+            currentRotation = Vector3.SmoothDamp(currentRotation, targetRotation, ref rotationSmoothVelocity, rotationSmoothTime);
             transform.eulerAngles = currentRotation;
             transform.position = target.transform.position - transform.forward * dstFromTarget;
 
@@ -121,7 +131,7 @@ public class ThirdPersonView : MonoBehaviour
 
             //Så länge "target" inte tittar på människan.
             if (targetFacing > minAngleDiffForSwap)
-            { 
+            {
                 Vector3 dirFromTargetToOther = other.transform.position - target.transform.position; dirFromTargetToOther.Normalize();
                 dirFromTargetToOther.y = 0f;
                 Quaternion lookRotationDog = Quaternion.LookRotation(dirFromTargetToOther);
@@ -139,8 +149,8 @@ public class ThirdPersonView : MonoBehaviour
 
             //Roterar kameran från den ena targeten till den andra.
             if (targetFacing < minAngleDiffForSwap && otherFacing < minAngleDiffForSwap)
-            { 
-                Vector3 newCamTargetPos = other.transform.position + (-other.transform.forward * dstFromTarget) + Vector3.up * 2;
+            {
+                Vector3 newCamTargetPos = other.transform.position - other.transform.forward * dstFromTarget;
 
                 //Kameran kollar om den har bytat position till sitt nya target, och bytar target isåfall.
                 if (currentLerpTime >= 1)
@@ -161,12 +171,21 @@ public class ThirdPersonView : MonoBehaviour
                     otherFAI = other.GetComponent<FollowerAI>();
                     otherNVA = other.GetComponent<NavMeshAgent>();
 
+                    Vector3 relativePos = target.transform.position - transform.position;
+                    Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+
+                    pitch = rotation.eulerAngles.x;
+                    yaw = rotation.eulerAngles.y;
+
+                    targetRotation = rotation.eulerAngles;
+                    currentRotation = rotation.eulerAngles;
+
                     targetCM.enabled = true;
                     targetCC.enabled = true;
                     otherFAI.enabled = true;
                     otherNVA.enabled = true;
-
                     swappingTarget = false;
+                    justSwitched = true;
                     currentLerpTime = 0;
                 }
                 //If the camera hasn't rotated to the new target.
@@ -176,11 +195,13 @@ public class ThirdPersonView : MonoBehaviour
                     currentLerpTime += Time.deltaTime;
                     transform.LookAt(tempCamTargetPos);
                     transform.position = Vector3.Lerp(transform.position, newCamTargetPos, currentLerpTime / lerpTime);
-
+                    targetRotation = tempCamTargetPos;
                 }
             }
         }
         else
+        {
             swappingTarget = false;
+        }
     }
 }

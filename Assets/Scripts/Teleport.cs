@@ -22,7 +22,10 @@ public class Teleport : MonoBehaviour
         {
             disabletimer -= Time.deltaTime;
         }
+    }
 
+    private void LateUpdate()
+    {
         if (available)
         {
             if (Input.GetKey(KeyCode.B) && disabletimer <= 0)
