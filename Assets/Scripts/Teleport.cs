@@ -17,8 +17,6 @@ public class Teleport : MonoBehaviour
         {
             disabletimer -= Time.deltaTime;
         }
-
-        Debug.Log("Disable timer: " + disabletimer);
     }
 
     private void LateUpdate()
