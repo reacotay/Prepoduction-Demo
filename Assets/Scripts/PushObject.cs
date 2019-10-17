@@ -50,7 +50,7 @@ public class PushObject : MonoBehaviour
 
     bool InRange()
     {
-        if (distance < 2)
+        if (distance < 3)
             return true;
         else
             return false;

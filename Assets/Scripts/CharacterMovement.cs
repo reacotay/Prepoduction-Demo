@@ -72,7 +72,7 @@ public class CharacterMovement : MonoBehaviour
         }
 
         CheckforDrop();
-
+        Footsteps();
         //PlayerMovement();
 
         // animator
@@ -301,6 +301,14 @@ public class CharacterMovement : MonoBehaviour
         {
             distanceBackedUp = 0;
             dList.RemoveAt(0);
+        }
+    }
+
+    void Footsteps()
+    {
+        if (controller.isGrounded && controller.velocity.magnitude > 4f && GetComponent<AudioSource>().isPlaying == false)
+        {
+            GetComponent<AudioSource>().Play();
         }
     }
 }
