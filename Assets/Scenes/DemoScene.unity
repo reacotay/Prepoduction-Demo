@@ -1484,7 +1484,7 @@ MonoBehaviour:
   - Movie movie movie
   - Tiger mafioso, they walk slow
   - Because they think slow
-  typingSpeed: 0.05
+  typingSpeed: 0.04
   continueButton: {fileID: 2056903301}
 --- !u!4 &747878170
 Transform:

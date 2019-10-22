@@ -24,9 +24,11 @@ public class Dialogue : MonoBehaviour
         {
             continueButton.SetActive(true);
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            NextSentence();
+        if (continueButton.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                NextSentence();
+        }
     }
     IEnumerator Type()
     {
